@@ -1,0 +1,2 @@
+# Diary
+Graduation project
