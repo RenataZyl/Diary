@@ -1,9 +1,7 @@
 from django.db import models
-
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
 from django.utils import timezone
 from datetime import datetime, timedelta
 
@@ -17,9 +15,7 @@ class Profile(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     avatar = models.ImageField('Аватар', blank=True, upload_to = 'images/avatar/')
-    gender =  models.CharField('Пол', max_length=1,
-                  choices=GENDER_CHOICE,
-                  blank=True)
+    gender =  models.CharField('Пол', max_length=1, choices=GENDER_CHOICE, blank=True)
     city = models.CharField('Город', max_length=100, blank=True)
     birth_date = models.DateField('Дата рождения', null=True, blank=True)
 
@@ -32,7 +28,7 @@ class Profile(models.Model):
 
 
 @receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
+def create_user_profile(sender: object, instance: object, created: object, **kwargs: object) -> object:
     if created:
         Profile.objects.create(user=instance)
 
@@ -106,3 +102,10 @@ class Follower(models.Model):
     class Meta:
         verbose_name = 'Подписчик'
         verbose_name_plural = 'Подписчики'
+
+@property
+def get_photo_url(self):
+    if self.avatar and hasattr(self.avatar, 'url'):
+        return self.avatar.url
+    else:
+        return "/media/images/avatar/standart.png"
